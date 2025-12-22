@@ -22,6 +22,14 @@ if [ -f /etc/yum.repos.d/negativo17-multimedia.repo ]; then
 	dnf5 config-manager --set-disabled negativo17-multimedia || true
 fi
 
+### Uninstall base Fedora42 kernel
+dnf5 remove -y \
+	kernel-core \
+	kernel-modules \
+	kernel-modules-core \
+	kernel-modules-extra \
+	kernel-defaults || true
+
 
 ### Install packages
 
@@ -46,9 +54,9 @@ dnf5 install -y --allowerasing \
 systemctl enable podman.socket
 
 #Enable iptsd
-mkdir -p /etc/systemd/system.multi-user.target.wants
-ln -s /usr/lib/systemd/system/iptsd.service \
-	/etc/systemd/system/multi-user.target.wants/iptsd.service || true
+mkdir -p /etc/systemd/system/multi-user.target.wants
+ln -sf /usr/lib/systemd/system/iptsd.service \
+		/etc/systemd/system/multi-user.target.wants/iptsd.service || true
 
 
 # Use a COPR Example:
