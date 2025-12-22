@@ -44,7 +44,12 @@ dnf5 install -y --allowerasing \
 
 # Enable services
 systemctl enable podman.socket
-systemctl enable iptsd
+
+#Enable iptsd
+mkdir -p /etc/systemd/system.multi-user.target.wants
+ln -s /usr/lib/systemd/system/iptsd.service \
+	/etc/systemd/system/multi-user.target.wants/iptsd.service || true
+
 
 # Use a COPR Example:
 #
