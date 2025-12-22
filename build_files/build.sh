@@ -8,13 +8,19 @@ cat >/etc/yum.repos.d/linux-surface.repo << 'EOF'
 name=linux-surface
 baseurl=https://pkg.surfacelinux.com/fedora/f42
 enabled=1
-skip_if_unavailable=False
+skip_if_unavailable=1
 gpgkey=https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
 gpgcheck=1
 enabled_metadata=1
 type=rpm-md
 repo_gpgcheck=0
 EOF
+
+
+### Disable broken third-party repos during build
+if [ -f /etc/yum.repos.d/negativo17-multimedia.repo ]; then
+	dnf5 config-manager --set-disabled negativo17-multimedia || true
+fi
 
 
 ### Install packages
@@ -29,12 +35,12 @@ EOF
 # this installs a package from fedora repos
 dnf5 install -y tmux 
 
-# Surface-specific kernel and helpers
-dnf5 install -y \
-kernel-surface \
-iptsd \
-libwacom-surface \
-libwacom-surface-data
+# Surface-specific kernel, wacom drivers, remove conflicting pre-installed components
+dnf5 install -y --allowerasing \
+	kernel-surface \
+	iptsd \
+	libwacom-surface \
+	libwacom-surface-data
 
 # Enable services
 systemctl enable podman.socket
