@@ -6,13 +6,12 @@ set -ouex pipefail
 cat >/etc/yum.repos.d/linux-surface.repo << 'EOF'
 [linux-surface]
 name=Linux Surface kernel
-baseurl=https://pkg.surfacelinux.com/fedora/42
+baseurl=https://pkg.surfacelinux.com/fedora/f42/
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
 skip_if_unavailable=False
-enabled_metadata=1
 type=rpm-md
 EOF
 
