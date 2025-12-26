@@ -5,15 +5,15 @@ set -ouex pipefail
 ### Add linux-surface repo (Fedora42)
 cat >/etc/yum.repos.d/linux-surface.repo << 'EOF'
 [linux-surface]
-name=linux-surface
-baseurl=https://pkg.surfacelinux.com/fedora/f42
+name=Linux Surface kernel
+baseurl=https://pkg.surfacelinux.com/fedora/42
 enabled=1
-skip_if_unavailable=1
-gpgkey=https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
 gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
+skip_if_unavailable=False
 enabled_metadata=1
 type=rpm-md
-repo_gpgcheck=0
 EOF
 
 
@@ -52,6 +52,7 @@ dnf5 install -y --allowerasing \
 
 # Enable services
 systemctl enable podman.socket
+systemctl enble surface-kernel-install.service
 
 #Enable iptsd
 mkdir -p /etc/systemd/system/multi-user.target.wants

@@ -1,0 +1,8 @@
+[linux-surface]
+name=Linux Surface Kernel
+baseurl=https://pkg.surfacelinux.com/fedora/f42
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://pkg.surfacelinux.com/fedora/keys/surface.asc
+skip_if_unavailable=False
