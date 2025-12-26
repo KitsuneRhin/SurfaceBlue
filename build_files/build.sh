@@ -2,32 +2,11 @@
 
 set -ouex pipefail
 
-### Add linux-surface repo (Fedora42)
-cat >/etc/yum.repos.d/linux-surface.repo << 'EOF'
-[linux-surface]
-name=Linux Surface kernel
-baseurl=https://pkg.surfacelinux.com/fedora/f42/
-enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
-skip_if_unavailable=False
-type=rpm-md
-EOF
-
 
 ### Disable broken third-party repos during build
 if [ -f /etc/yum.repos.d/negativo17-multimedia.repo ]; then
 	dnf5 config-manager --set-disabled negativo17-multimedia || true
 fi
-
-### Uninstall base Fedora42 kernel
-dnf5 remove -y \
-	kernel-core \
-	kernel-modules \
-	kernel-modules-core \
-	kernel-modules-extra \
-	kernel-defaults || true
 
 
 ### Install packages
@@ -42,12 +21,6 @@ dnf5 remove -y \
 # this installs a package from fedora repos
 dnf5 install -y tmux 
 
-# Surface-specific kernel, wacom drivers, remove conflicting pre-installed components
-dnf5 install -y --allowerasing \
-	kernel-surface \
-	iptsd \
-	libwacom-surface \
-	libwacom-surface-data
 
 # Enable services
 systemctl enable podman.socket

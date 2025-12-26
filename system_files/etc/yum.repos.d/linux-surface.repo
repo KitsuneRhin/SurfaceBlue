@@ -1,8 +1,12 @@
+### Add linux-surface repo (Fedora42)
+cat >/etc/yum.repos.d/linux-surface.repo << 'EOF'
 [linux-surface]
-name=Linux Surface Kernel
-baseurl=https://pkg.surfacelinux.com/fedora/f42
+name=Linux Surface kernel
+baseurl=https://pkg.surfacelinux.com/fedora/f42/
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
-gpgkey=https://pkg.surfacelinux.com/fedora/keys/surface.asc
+gpgkey=https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
 skip_if_unavailable=False
+type=rpm-md
+EOF
