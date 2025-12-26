@@ -51,7 +51,7 @@ dnf5 install -y --allowerasing \
 
 # Enable services
 systemctl enable podman.socket
-systemctl enble surface-kernel-install.service
+systemctl enable surface-kernel-install.service
 
 #Enable iptsd
 mkdir -p /etc/systemd/system/multi-user.target.wants
