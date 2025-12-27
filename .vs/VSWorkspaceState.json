@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\.github\\workflows",
+    "\\system_files",
+    "\\system_files\\etc",
+    "\\system_files\\etc\\yum.repos.d",
+    "\\system_files\\usr",
+    "\\system_files\\usr\\lib",
+    "\\system_files\\usr\\lib\\systemd",
+    "\\system_files\\usr\\lib\\systemd\\system",
+    "\\system_files\\usr\\lib\\systemd\\system-preset"
+  ],
+  "SelectedNode": "\\system_files\\usr\\lib\\systemd\\system\\surface-kernel-install.service",
+  "PreviewInSolutionExplorer": false
+}
