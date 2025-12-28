@@ -1,5 +1,5 @@
-export image_name := env("SurfaceBlue-alpha", "image-template") # output image name, usually same as repo name, change as needed
-export default_tag := env("DEFAULT_TAG", "latest")
+export image_name := env("SurfaceBlue", "SurfaceBlue") # output image name, usually same as repo name, change as needed
+export default_tag := env("DEFAULT_TAG", "alpha")
 export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest")
 
 alias build-vm := build-qcow2
