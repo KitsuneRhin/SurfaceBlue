@@ -4,7 +4,8 @@ ConditionPathExists=!/var/lib/surface-kernel-installed
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/rpm-ostree install kernel-surface iptsd libwacom-surface libwacom-surface-data
+ExecStart=/usr/bin/rpm-ostree install --allow-replacement --allow-erasing \
+	kernel-surface iptsd libwacom-surface libwacom-surface-data
 ExecStart=/usr/bin/systemctl enable iptsd.service
 ExecStart=/usr/bin/touch /var/lib/surface-kernel-installed
 
