@@ -5,7 +5,7 @@ ConditionPathExists=!/var/lib/surface-kernel-installed
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/rpm-ostree uninstall \
-	kernel kernel-core kernel-modules kernel-modules-extra libwacom libwacom-data 
+	kernel-core kernel-modules kernel-modules-extra libwacom libwacom-data 
 ExecStart=/usr/bin/rpm-ostree install --force-replacefiles \
 	kernel-surface iptsd libwacom-surface libwacom-surface-data
 ExecStart=/usr/bin/systemctl enable iptsd.service
