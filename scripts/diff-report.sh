@@ -1,34 +1,63 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-UPSTREAM_DIR="upstream/bluefin-dx"
-LOCAL_CONTAINERFILE="Containerfile"
-LOCAL_SYSTEM_FILES="system_files"
+REPORT_DIR="upstream"
+REPORT_FILE="${REPORT_DIR}/diff.txt"
 
-echo "=== Upstream metadata ==="
-cat upstream/metadata.json || echo "(no metadata found)"
+mkdir -p "${REPORT_DIR}"
 
-echo
-echo "=== Containerfile diff ==="
-if [ -f "$UPSTREAM_DIR/Containerfile" ]; then
-  diff -u "$UPSTREAM_DIR/Containerfile" "$LOCAL_CONTAINERFILE" || true
+echo "Generating enhanced upstream diff report..."
+echo "==========================================" > "${REPORT_FILE}"
+echo "UPSTREAM DIFF REPORT" >> "${REPORT_FILE}"
+echo "Generated: $(date -u)" >> "${REPORT_FILE}"
+echo "==========================================" >> "${REPORT_FILE}"
+echo "" >> "${REPORT_FILE}"
+
+# 1. Upstream commit summary
+echo "### Upstream Commit Summary" >> "${REPORT_FILE}"
+git log --oneline upstream/main..HEAD >> "${REPORT_FILE}" || echo "(no commit summary available)" >> "${REPORT_FILE}"
+echo "" >> "${REPORT_FILE}"
+
+# 2. Changed files
+echo "### Changed Files (Added/Modified/Deleted)" >> "${REPORT_FILE}"
+git diff --name-status upstream/main..HEAD >> "${REPORT_FILE}" || echo "(no file changes)" >> "${REPORT_FILE}"
+echo "" >> "${REPORT_FILE}"
+
+# 3. Package diff (RPMs)
+echo "### Package Changes (RPM diff)" >> "${REPORT_FILE}"
+if command -v rpm-ostree >/dev/null 2>&1; then
+    echo "Old tree:" >> "${REPORT_FILE}"
+    rpm-ostree db diff --old upstream --new . >> "${REPORT_FILE}" || echo "(rpm-ostree diff failed)" >> "${REPORT_FILE}"
 else
-  echo "(no upstream Containerfile found)"
+    echo "(rpm-ostree not available in CI environment)" >> "${REPORT_FILE}"
 fi
+echo "" >> "${REPORT_FILE}"
 
-echo
-echo "=== system_files diff (recursive) ==="
-if [ -d "$UPSTREAM_DIR/system_files" ]; then
-  diff -ru "$UPSTREAM_DIR/system_files" "$LOCAL_SYSTEM_FILES" || true
+# 4. Kernel version diff
+echo "### Kernel Version Changes" >> "${REPORT_FILE}"
+OLD_KERNEL=$(grep -R "kernel" upstream/metadata.json 2>/dev/null || echo "unknown")
+NEW_KERNEL=$(uname -r || echo "unknown")
+echo "Old kernel: ${OLD_KERNEL}" >> "${REPORT_FILE}"
+echo "New kernel: ${NEW_KERNEL}" >> "${REPORT_FILE}"
+echo "" >> "${REPORT_FILE}"
+
+# 5. Containerfile diff
+echo "### Containerfile Diff" >> "${REPORT_FILE}"
+git diff upstream/main..HEAD -- Containerfile >> "${REPORT_FILE}" || echo "(no Containerfile changes)" >> "${REPORT_FILE}"
+echo "" >> "${REPORT_FILE}"
+
+# 6. Bootc layer diff (if metadata exists)
+echo "### Bootc Layer Diff" >> "${REPORT_FILE}"
+if [ -f upstream/metadata.json ]; then
+    jq '.layers' upstream/metadata.json >> "${REPORT_FILE}" || echo "(metadata parse failed)" >> "${REPORT_FILE}"
 else
-  echo "(no upstream system_files found)"
+    echo "(no metadata.json found)" >> "${REPORT_FILE}"
 fi
+echo "" >> "${REPORT_FILE}"
 
-echo
-echo "=== Quick package-change summary (heuristic) ==="
-# Heuristic: look for 'dnf' or 'dnf5' install lines in Containerfile
-grep -E "dnf(5)? install" -n "$UPSTREAM_DIR/Containerfile" 2>/dev/null || true
-grep -E "dnf(5)? install" -n "$LOCAL_CONTAINERFILE" 2>/dev/null || true
+# 7. Full git diff (optional)
+echo "### Full Git Diff" >> "${REPORT_FILE}"
+git diff upstream/main..HEAD >> "${REPORT_FILE}" || echo "(no full diff)" >> "${REPORT_FILE}"
+echo "" >> "${REPORT_FILE}"
 
-echo
-echo "=== End of diff ==="
+echo "Enhanced diff report written to ${REPORT_FILE}"
