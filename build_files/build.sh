@@ -9,8 +9,5 @@ fi
 # Install base packages
 dnf5 install -y tmux
 
-# Enable first-boot kernel installer
-systemctl enable surface-kernel-install.service
-
 # Enable podman socket
 systemctl enable podman.socket

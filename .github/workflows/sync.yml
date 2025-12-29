@@ -1,0 +1,32 @@
+name: Sync Upstream Bluefin-DX
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # nightly at 03:00 UTC; adjust as needed
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install rsync (for copying upstream subpath)
+        run: sudo apt-get update && sudo apt-get install -y rsync git curl
+
+      - name: Run upstream sync
+        run: |
+          chmod +x scripts/sync-upstream.sh
+          ./scripts/sync-upstream.sh
+
+      - name: Create Pull Request (if branch exists)
+        if: success() && steps.sync.outcome == 'success'
+        run: echo "Sync script completed; branch pushed. If gh CLI is available it created a PR."
