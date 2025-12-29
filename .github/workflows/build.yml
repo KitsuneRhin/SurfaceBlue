@@ -19,7 +19,7 @@ env:
   IMAGE_LOGO_URL: "https://avatars.githubusercontent.com/u/120078124?s=200&v=4"
   IMAGE_NAME: "${{ github.event.repository.name }}"
   IMAGE_REGISTRY: "ghcr.io/${{ github.repository_owner }}"
-  DEFAULT_TAG: "latest"
+  DEFAULT_TAG: ${{ github.ref == 'refs/heads/main' && 'stable' || 'latest' }}
   IMAGE_TAG: "${{ github.sha }}"
 
 concurrency:
@@ -102,9 +102,12 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           oci: false
 
-      - name: Set IMAGE_REF for preflight
-        run: echo "IMAGE_REF=${IMAGE_NAME}:${DEFAULT_TAG}" >> $GITHUB_ENV
-    
+      - name: Save built image reference (for preflight)
+        id: image_ref
+        run: |
+          IMAGE_REF="${IMAGE_NAME}:${DEFAULT_TAG}"
+          echo "Using IMAGE_REF=${IMAGE_REF}"
+
       - name: Upload build logs
         uses: actions/upload-artifact@v4
         with:
