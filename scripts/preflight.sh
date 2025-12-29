@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -x
 
 # Files/paths to verify inside the image
 declare -a CHECK_PATHS=(

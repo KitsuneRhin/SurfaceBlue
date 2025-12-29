@@ -111,3 +111,12 @@ jobs:
           # buildah-build leaves the image in local containers storage under the image name and one of the tags from metadata.
           # Tag it with the commit SHA for deterministic reference.
           buildah tag "${{ env.IMAGE_NAME }}:${{ env.DEFAULT_TAG }}" "${
+
+      - name: Upload build logs
+        uses: actions/upload-artifact@v4
+        with:
+           name: build-logs-${{ github.run_id }}
+           path: |
+               build.log
+               preflight.log
+               upstream/metadata.json
