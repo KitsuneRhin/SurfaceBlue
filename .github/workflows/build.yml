@@ -116,6 +116,7 @@ jobs:
                build.log
                preflight.log
                upstream/metadata.json
+               upstream/diff-report.txt
 
       - name: Login to GitHub Container Registry
         if: github.event_name != 'pull_request'
