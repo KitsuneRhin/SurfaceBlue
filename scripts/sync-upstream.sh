@@ -5,7 +5,7 @@ set -x
 # Configuration: upstream repo and paths
 UPSTREAM_REPO="https://github.com/ublue-os/bluefin.git"
 UPSTREAM_REF="main"                       # change if you want a tag/branch
-UPSTREAM_SUBPATH="images/bluefin-dx"   # path inside upstream repo that contains Containerfile/system_files
+UPSTREAM_SUBPATH="pkgs/container/bluefin-dx"   # path inside upstream repo that contains Containerfile/system_files
 LOCAL_UPSTREAM_DIR="upstream/bluefin-dx"
 METADATA_FILE="upstream/metadata.json"
 SYNC_BRANCH="upstream-sync/bluefin-dx"
