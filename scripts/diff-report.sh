@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPORT_DIR="upstream"
-REPORT_FILE="${REPORT_DIR}/diff.txt"
+REPORT_FILE="${REPORT_DIR}/diff-report.txt"
 
 mkdir -p "${REPORT_DIR}"
 
